@@ -22,7 +22,7 @@ app.get('/index.html', function(req, res) {
 });
 
 app.get('/API/v1/documentation.html', function(req, res) {
-    res.sendFile(__dirname + './comp4537_api.json');
+    res.sendFile(__dirname + '/documentation.html');
 });
 
 app.listen(port, () => {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+ <html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Force IE  render to its rendering mode -->
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/add_movie.css">
+    <script type="text/javascript" src="js/add_movie.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Admin Term Project</title>
+</head>
+<body>
+	<div class="wrapper" id="wrapper">
+		<header>
+			<div class="jumbotron jumbotron-fluid" id="banner">
+				<div class="parallax text-center" style="background-image:url(https://www.aleksandrasorokina.com/movie_background.jpeg);">
+					<div class="parallax-pattern-overlay">
+						<div class="container text-center" style="height:580px;padding-top:170px;">
+							<h2 class="display-2">Movie Database </h2>
+							<h3 class="learn">Term Project</h3>
+                        </div>
+                    </div>
+                </div>
+                </div>
+		</header>
+		<section class="form" id="add_movie_container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="heading">
+                            <h2>Add movie to the database</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container mx-width">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form>
+                            <input type="text" class="form-control" id="movie_title" placeholder="Movie Title">
+                            <select class="form-control" id="movie_year"></select> 
+                            <select class="form-control" id="movie_genre"></select> 
+                            <div class="container" id="add_movie_alert"></div>
+                            <button type="submit" class="contact submit" id="submit_movie">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+		<section class="footer" id="footer">
+			<div class="container">
+
+			</div>
+		</section>
+</div>
+</body>
+
+ </html>

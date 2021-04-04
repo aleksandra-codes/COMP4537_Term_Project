@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+ <html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Force IE  render to its rendering mode -->
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/admin.css">
+    <script type="text/javascript" src="js/admin.js"></script>
+    <title>Admin Term Project</title>
+    <link rel="shortcut icon" href="#" />
+</head>
+<body>
+	<div class="wrapper" id="wrapper">
+		<header>
+			
+			<div class="container text-center" style="padding-top:50px;">
+				<h2>Movie Database Admin</h2>
+				<h3>Endpoint Statistics</h3>
+            </div>
+		</header>
+		<section class="stats" id="endpoint_stats">
+			
+            <div class="container table-responsive py-5"> 
+            <table class="table table-bordered table-hover">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col" id="method">Method</th>
+                  <th scope="col" id="endpoint">Endpoint</th>
+                  <th scope="col" id="requests">Requests</th>
+                </tr>
+              </thead>
+              <tbody id="movie_rows">
+                <tr>
+                    <th scope="row">GET</th>
+                    <td>"API/v1/movie"</td>
+                    <td id="get_requests">loading...</td>
+                </tr>
+                <tr>
+                    <th scope="row">POST</th>
+                    <td>"API/v1/movie"</td>
+                    <td id="post_requests">loading...</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+		</section>
+		<section class="footer" id="footer">
+
+</div>
+<!--wrapper end-->
+</body>
+
+ </html>

@@ -177,6 +177,7 @@ body {
    }
    
    .footer .container {
+    display: flex;
     padding: 60px 0 20px;
    }
    

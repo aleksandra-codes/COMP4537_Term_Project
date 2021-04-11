@@ -1,0 +1,15 @@
+INSERT INTO requests (end_point, reqType, count) VALUES ('movie', 'POST', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('movie_id', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('movie_id', 'PUT', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('movie_id', 'DELETE', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('movie_genre', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('actor', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('actor', 'POST', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('actor_id', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('actor_id', 'PUT', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('actor_id', 'DELETE', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('review', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('review', 'POST', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('review_id', 'PUT', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('cast_id', 'GET', 0);
+INSERT INTO requests (end_point, reqType, count) VALUES ('cast_id', 'POST', 0);

@@ -1,0 +1,6 @@
+CREATE TABLE movies (
+    movieId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    year INT NOT NULL,
+    genre VARCHAR(50),
+);

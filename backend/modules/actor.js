@@ -79,7 +79,7 @@ function getActorById(connection, response, id) {
     connection.execSql(requestSelect);
 }
 
-function updateActor(connection, response, actorInfo) {
+function updateActor(connection, response, actorInfo, id) {
     const UPDATEACTOR = `UPDATE actors SET fullname = @fullname, year = @year, pictureURL = @pictureURL WHERE actorId = @id`;
     let actor_info;
     let requestUpdate = new Request(UPDATEACTOR, function(err, result) {
@@ -95,7 +95,7 @@ function updateActor(connection, response, actorInfo) {
         resource.updateRequest(connection, response, message, resource.requests["put_actorId"]);
     });
 
-    requestUpdate.addParameter('id', TYPES.Int, actorInfo.id);
+    requestUpdate.addParameter('id', TYPES.Int, id);
     requestUpdate.addParameter('fullname', TYPES.VarChar, actorInfo.fullname);
     requestUpdate.addParameter('year', TYPES.Int, actorInfo.year);
     requestUpdate.addParameter('pictureURL', TYPES.VarChar, actorInfo.pictureURL);
@@ -109,7 +109,7 @@ function deleteActorById(connection, response, id) {
         if(err) throw err;
     });
 
-    requestDeletet.on('requestCompleted', function() {
+    requestDelete.on('requestCompleted', function() {
         let message = "Successfully deleted actor entry";
         resource.updateRequest(connection, response, message, resource.requests["del_actorId"]);
     });
@@ -119,7 +119,7 @@ function deleteActorById(connection, response, id) {
     console.log("Deletion completed!");
 }
 
-app.get(endPoint + "actor", function(req, res) {
+app.get(endPoint + "actor", checkJwt, function(req, res) {
     console.log('Getting list of actors!');
     getActors(connection, res);
 });
@@ -148,7 +148,7 @@ app.put(endPoint + "actor/:id", checkJwt, function(req, res) {
         body = JSON.parse(body);
         console.log(body);
         try {
-            updateActor(connection, res, body);
+            updateActor(connection, res, body, req.params.id);
         }
         catch(e) {
             res.status(500);

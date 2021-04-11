@@ -19,6 +19,14 @@
     {
       "name": "user",
       "description": "Operations about user"
+    }, 
+    {
+      "name": "review",
+      "description": "Add your own review"
+    },
+    {
+      "name": "cast",
+      "description": "Find out who was in the movie."
     }
   ],
   "schemes": [
@@ -27,6 +35,47 @@
   ],
   "paths": {
     "/movie": {
+      "get": {
+        "tags": [
+          "movie"
+        ],
+        "summary": "Gets all movies from the database",
+        "description": "",
+        "operationId": "getMovies",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Movie object that needs to be added to the database",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/Movie"}
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "moviedb_auth": [
+              "write:movies",
+              "read:movies"
+            ]
+          }
+        ]
+      },
       "post": {
         "tags": [
           "movie"
@@ -62,37 +111,34 @@
           {
             "moviedb_auth": [
               "write:movies",
-              "read:movies",
-              "write:actors",
-              "read:actors"
+              "read:movies"
             ]
           }
         ]
       }
     },
-    "/movie/findByTags": {
+    "/movie/genres/{genre}": {
       "get": {
         "tags": [
           "movie"
         ],
-        "summary": "Finds Movies by tags",
+        "summary": "Finds Movies by Genre",
         "description": "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing.",
-        "operationId": "findMoviesByTags",
+        "operationId": "findMoviesByGenre",
         "produces": [
           "application/xml",
           "application/json"
         ],
         "parameters": [
           {
-            "name": "tags",
-            "in": "query",
+            "name": "genre",
+            "in": "path",
             "description": "Tags to filter by",
             "required": true,
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "collectionFormat": "multi"
+            }
           }
         ],
         "responses": {
@@ -113,9 +159,7 @@
           {
             "moviedb_auth": [
               "write:movies",
-              "read:movies",
-              "write:actors",
-              "read:actors"
+              "read:movies"
             ]
           }
         ]
@@ -130,8 +174,8 @@
         "description": "Returns a single movie",
         "operationId": "getMovieById",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -203,9 +247,7 @@
           {
             "moviedb_auth": [
               "write:movies",
-              "read:movies",
-              "write:actors",
-              "read:actors"
+              "read:movies"
             ]
           }
         ]
@@ -249,9 +291,7 @@
           {
             "moviedb_auth": [
               "write:movies",
-              "read:movies",
-              "write:actors",
-              "read:actors"
+              "read:movies"
             ]
           }
         ]
@@ -292,8 +332,6 @@
         "security": [
           {
             "moviedb_auth": [
-              "write:movies",
-              "read:movies",
               "write:actors",
               "read:actors"
             ]
@@ -382,8 +420,6 @@
         "security": [
           {
             "moviedb_auth": [
-              "write:movies",
-              "read:movies",
               "write:actors",
               "read:actors"
             ]
@@ -437,13 +473,278 @@
         ]
       }
     },
-    "/user": {
+      "/review": {
+      "post": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Add a new review to the database",
+        "description": "",
+        "operationId": "addReview",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Review to be added to the database",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Review"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "moviedb_auth": [
+              "write:actors",
+              "read:actors"
+            ]
+          }
+        ]
+      }
+    },
+    "/review/{reviewId}": {
+      "get": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Find review by ID",
+        "description": "Returns a single review",
+        "operationId": "getReviewById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "description": "ID of review to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Review"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Review not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Updates a review in the database",
+        "description": "",
+        "operationId": "updateReview",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "description": "ID of actor that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Updated name of the actor",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "moviedb_auth": [
+              "write:actors",
+              "read:actors"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "review"
+        ],
+        "summary": "Deletes the review",
+        "description": "",
+        "operationId": "deleteReview",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "description": "Review id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Rview not found"
+          }
+        },
+        "security": [
+          {
+            "moviedb_auth": [
+              "write:movies",
+              "read:movies"
+            ]
+          }
+        ]
+      }
+    },
+     "/cast": {
+      "post": {
+        "tags": [
+          "cast"
+        ],
+        "summary": "Add a cast of a movie to the database",
+        "description": "",
+        "operationId": "addCast",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Cast to be added to the database",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Cast"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "moviedb_auth": [
+              "write:actors",
+              "read:actors"
+            ]
+          }
+        ]
+      }
+    },
+    "/cast/{movieId}": {
+      "get": {
+        "tags": [
+          "cast"
+        ],
+        "summary": "Find cast by ID",
+        "description": "Returns a single review",
+        "operationId": "getCastById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "description": "ID of movie to get cast of",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Cast"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Cast not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/register": {
       "post": {
         "tags": [
           "user"
         ],
         "summary": "Create user",
-        "description": "This can only be done by the logged in user.",
+        "description": "This endpoint is used to for sending user info to the database.",
         "operationId": "createUser",
         "produces": [
           "application/xml",
@@ -467,73 +768,7 @@
         }
       }
     },
-    "/user/createWithArray": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Creates list of users with given input array",
-        "description": "",
-        "operationId": "createUsersWithArrayInput",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "List of user object",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      }
-    },
-    "/user/createWithList": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Creates list of users with given input array",
-        "description": "",
-        "operationId": "createUsersWithListInput",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "List of user object",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      }
-    },
-    "/user/login": {
+    "/login": {
       "get": {
         "tags": [
           "user"
@@ -585,130 +820,6 @@
           }
         }
       }
-    },
-    "/user/logout": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Logs out current logged in user session",
-        "description": "",
-        "operationId": "logoutUser",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "default": {
-            "description": "successful operation"
-          }
-        }
-      }
-    },
-    "/user/{username}": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Get user by user name",
-        "description": "",
-        "operationId": "getUserByName",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be fetched. Use user1 for testing. ",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Updated user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "name that need to be updated",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Updated user object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid user supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
     }
   },
   "securityDefinitions": {
@@ -730,19 +841,23 @@
     }
   },
   "definitions": {
-    "Genre": {
+    "Cast": {
       "type": "object",
       "properties": {
-        "id": {
+        "movieId": {
           "type": "integer",
           "format": "int64"
         },
-        "name": {
+        "actorId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "role": {
           "type": "string"
         }
       },
       "xml": {
-        "name": "Genre"
+        "name": "Cast"
       }
     },
     "User": {
@@ -753,15 +868,6 @@
           "format": "int64"
         },
         "username": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "email": {
           "type": "string"
         },
         "password": {
@@ -782,11 +888,11 @@
           "type": "integer",
           "format": "int64"
         },
-        "name": {
+        "fullname": {
           "type": "string",
           "example": "Christian Bale"
         },
-        "age": {
+        "year": {
           "type": "integer",
           "format": "int64"
         },
@@ -798,10 +904,33 @@
         "name": "Actor"
       }
     },
+    "Review": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "movieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
     "Movie": {
       "type": "object",
       "required": [
-        "name",
+        "title",
         "year",
         "actors"
       ],
@@ -811,25 +940,16 @@
           "format": "int64"
         },
         "genre": {
-          "$ref": "#/definitions/Genre"
+          "type": "string",
+          "example": "Action"
         },
-        "name": {
+        "title": {
           "type": "string",
           "example": "The Dark Knight"
         },
         "year": {
           "type": "integer",
           "format": "int64"
-        },
-        "actors": {
-          "type": "array",
-          "xml": {
-            "name": "actor",
-            "wrapped": true
-          },
-          "items": {
-            "$ref": "#/definitions/Actor"
-          }
         }
       },
       "xml": {

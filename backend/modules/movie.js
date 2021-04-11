@@ -58,8 +58,8 @@ function getMovies(connection, response) {
 }
 
 function addMovie(connection, response, movieInfo) {
-    const INSERTMOVIE = `IF NOT EXISTS (SELECT * FROM movies WHERE title = '${movieInfo.title}')
-    INSERT INTO movies (title, year, genre) VALUES ('${movieInfo.title}', ${movieInfo.year}, '${movieInfo.genre}');`;
+    const INSERTMOVIE = `IF NOT EXISTS (SELECT * FROM movies WHERE title = @title)
+    INSERT INTO movies (title, year, genre) VALUES (@title, @year, @genre);`;
     let requestInsert = new Request(INSERTMOVIE, function(err) {
         if(err) throw err;
     });
@@ -69,12 +69,16 @@ function addMovie(connection, response, movieInfo) {
         resource.updateRequest(connection, response, message, resource.requests["post_movie"]);
     });
 
+    requestInsert.addParameter('title', TYPES.VarChar, movieInfo.title);
+    requestInsert.addParameter('year', TYPES.Int, movieInfo.year);
+    requestInsert.addParameter('genre', TYPES.VarChar, movieInfo.genre);
+
     connection.execSql(requestInsert);
     console.log("Insertion completed!");
 }
 
 function getMovieById(connection, response, id) {
-    const Q_MOVIES = `SELECT * FROM movies WHERE movieId = ${id}`;
+    const Q_MOVIES = `SELECT * FROM movies WHERE movieId = @id`;
     let movie_info;
     let requestSelect = new Request(Q_MOVIES, function(err, result) {
         if(err) throw err;  
@@ -89,10 +93,11 @@ function getMovieById(connection, response, id) {
             response.send("Movie does not exist in database");
         } else {
             console.log("Retrieved movie successfully");
-            resource.updateRequest(connection, response, JSON.stringify(movie_info), resource.requests["post_movie"]);
+            resource.updateRequest(connection, response, JSON.stringify(movie_info), resource.requests["get_movieId"]);
         }
     });
 
+    requestSelect.addParameter('id', TYPES.Int, id);
     connection.execSql(requestSelect);
 }
 
@@ -125,7 +130,7 @@ function getMoviesByGenre(connection, response, genre) {
     connection.execSql(requestSelect);
 }
 
-function updateMovie(connection, response, movieInfo) {
+function updateMovie(connection, response, movieInfo, id) {
     const UPDATEMOVIE = `UPDATE movies SET title = @title, year = @year, genre = @genre WHERE movieId = @id`;
     let movie_info;
     let requestUpdate = new Request(UPDATEMOVIE, function(err, result) {
@@ -141,7 +146,7 @@ function updateMovie(connection, response, movieInfo) {
         resource.updateRequest(connection, response, message, resource.requests["put_movieId"]); 
     });
 
-    requestUpdate.addParameter('id', TYPES.Int, movieInfo.id);
+    requestUpdate.addParameter('id', TYPES.Int, id);
     requestUpdate.addParameter('title', TYPES.VarChar, movieInfo.title);
     requestUpdate.addParameter('year', TYPES.Int, movieInfo.year);
     requestUpdate.addParameter('genre', TYPES.VarChar, movieInfo.genre);
@@ -198,7 +203,7 @@ app.put(endPoint + "movie/:id", checkJwt, function(req, res) {
 
     req.on('end', () => {
         try {
-            updateMovie(connection, res, body);
+            updateMovie(connection, res, body, req.params.id);
         }
         catch(e) {
             res.status(400);

@@ -1,44 +1,49 @@
 window.onload=()=>{
-  postMovie()
-  loadMovies()
+  const token = window.localStorage.getItem('token')
+  if(token != null){
+      //   postMovie()
+      loadStats(token)
+  } else {
+      window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/login.html")
+  }
+
 };
 
 
-postMovie = () => {
-  const xhttp = new XMLHttpRequest();
-  const url = "https://young-u6.azurewebsites.net/API/v1/movie";
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText)
-      let res_obj = JSON.parse(this.responseText)
-      const num_req = res_obj["num_req"]
-      document.getElementById("post_requests").innerHTML = num_req
-    }
-  }
-  let data ={
-    "title": "The Matrix",
-    "year": 1999,
-    "genre": "Science fiction",
-  }
-  // send the data as a POST request
-  xhttp.open("POST", url, true);
-  xhttp.setRequestHeader("Content-type", "text/plain");
-  xhttp.send(JSON.stringify(data));
-}
-
-loadMovies = () => {
+loadStats = (token) => {
 const xhttp = new XMLHttpRequest();
-const url = "https://young-u6.azurewebsites.net/API/v1/movie";
+const url = "https://young-u6.azurewebsites.net/API/v1/movie/requests";
 
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-    const res_obj = JSON.parse(this.responseText)
-    const num_req = res_obj["num_req"]
-        document.getElementById("get_requests").innerHTML = num_req
+xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+  const res_arr = JSON.parse(this.responseText)
+  const table_body = document.getElementById("")
+  for(value in res_arr){
 
+      const obj = res_arr[value]
+      const row = document.createElement("tr");
+    const td_method = document.createElement("td");
+    td_method.setAttribute("scope", "row")
+    const td_endpoint = document.createElement("td");
+    const td_requests = document.createElement("td");
+    
+    td_method.innerHTML = obj.reqType
+    td_endpoint.innerHTML = "'/API/v1/" + obj.endPoint + "'"
+    td_requests.innerHTML = obj.count
+
+  
+    row.appendChild(td_method)
+    row.appendChild(td_endpoint)
+    row.appendChild(td_requests)
+  
+    document.getElementById('stats_rows').appendChild(row);
+      
   }
-  }
-  xhttp.open("GET", url, true);
-  xhttp.setRequestHeader("Content-type", "text/plain");
-  xhttp.send();
+
+}
+}
+xhttp.open("GET", url, true);
+xhttp.setRequestHeader("Authorization", "Bearer " + token )
+xhttp.setRequestHeader("Content-type", "text/plain");
+xhttp.send();
 }

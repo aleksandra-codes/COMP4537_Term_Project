@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/client.css">
     <script type="text/javascript" src="js/client.js"></script>
     <script type="text/javascript">
-        window.onload = loadMovies;
+    //     window.onload = loadMovies;
     </script>
 </head>
 <body>
@@ -23,34 +23,22 @@
                         </div>
                     </div>
                 </div>
+            </div>
 		</header>
         <section class="redirect_btns" id="pages">
             <div class="col-lg">
                 <h3>Actions</h3>
-                <!-- Use the bootstrap button classes on <a>, <button> or <input> tags -->
-                
+                <a id="load_movies"><input type="button" class="btn btn-info" value="Display movies"></a>
+                <a id="load_actors"><input type="button" class="btn btn-info" value="Display actors"></a>
+
                 <a id="add_movie" href = "client_pages/add_movie.html"><input type="button" class="btn btn-info" value="Add a movie"></a>
-                <button type="button" class="btn btn-info">Search movies</button>
-                <button type="button" class="btn btn-info">Search actors</button>
-                <button type="button" class="btn btn-info">Reviews</button>
+                <a id="add_actor" href = "client_pages/add_actor.html"><input type="button" class="btn btn-info" value="Add an actor"></a>
+                <a id="add_review" href = "client_pages/add_review.html"><input type="button" class="btn btn-info" value="Add a review"></a>
             </div>
         </section>
 
 		<section class="features" id="features">
-			
-            <div class="container table-responsive py-5"> 
-            <table class="table table-bordered table-hover">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col" id="id">ID</th>
-                  <th scope="col" id="col1_id">Movie</th>
-                  <th scope="col" id="col2_id">Year</th>
-                  <th scope="col" id="col3_id">Genre</th>
-                </tr>
-              </thead>
-              <tbody id="movie_rows">
-              </tbody>
-            </table>
+            <div class="container table-responsive py-5" id ="container_responsive"> 
             </div>
 		</section>
 

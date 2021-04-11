@@ -1,25 +1,10 @@
 window.onload=()=>{
-    
   const token = window.localStorage.getItem('token')
   if(token != null){
-       const year_selector = document.getElementById("movie_year")
-        year_selector.innerHTML = createYearOptions()
-      
-        const genre_selector = document.getElementById("movie_genre")
-        genre_selector.innerHTML = createMovieGenreOptions()
-      
-      
-        const submit_movie = document.getElementById("submit_movie")
-      
-        submit_movie.addEventListener("click", function(event){
-          event.preventDefault()
-          postMovie()
-        });
+       
       } else {
           window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/login_client.html")
       }
-
-  
 };
 
 
@@ -33,9 +18,8 @@ for(let y=till; y>=year; y--){
 return options
 }
 
-postMovie = () => {
+postMovie = (data) => {
 const xhttp = new XMLHttpRequest();
-const token = window.localStorage.getItem('token')
 const url = "https://young-u6.azurewebsites.net/API/v1/movie";
 xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
@@ -58,7 +42,6 @@ let stringData = JSON.stringify(data_to_post);
 // send the data as a POST request
 xhttp.open("POST", url, true);
 xhttp.setRequestHeader("Content-type", "text/plain");
-xhttp.setRequestHeader("Authorization", "Bearer " + token);
 xhttp.send(stringData);
 
 }

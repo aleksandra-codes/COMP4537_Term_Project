@@ -6,7 +6,7 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/add_movie.css">
-    <script type="text/javascript" src="js/add_movie.js"></script>
+    <script type="text/javascript" src="js/add_review.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Admin Term Project</title>
 </head>
@@ -29,7 +29,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="heading">
-                            <h2>Add movie to the database</h2>
+                            <h2>Add movie review</h2>
                         </div>
                     </div>
                 </div>
@@ -38,9 +38,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <form>
-                            <input type="text" class="form-control" id="movie_title" placeholder="Movie Title">
-                            <select class="form-control" id="movie_year"></select> 
-                            <select class="form-control" id="movie_genre"></select> 
+                            <select class="form-control" id="movie_title"></select> 
+                            <textarea class="form-control" id="comment" rows="3" placeholder="Comment" ></textarea>
+                            <select class="form-control" id="rating"></select> 
+                            
                             <div class="container" id="add_movie_alert"></div>
                             <button type="submit" class="contact submit" id="submit_movie">Submit</button>
                             <a id="back_btn" href="../client.html"><button type="button" class="contact submit">Back</button></a>
@@ -49,6 +50,7 @@
                 </div>
             </div>
         </section>
+
 </div>
 </body>
 

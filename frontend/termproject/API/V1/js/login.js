@@ -1,7 +1,8 @@
+
 window.onload=()=>{
   const submit = document.getElementById("login_form");
   submit.setAttribute("onsubmit", 
-       "event.preventDefault(); postLogin();"
+       "event.preventDefault(); return postLogin();"
       );
 };
 
@@ -12,7 +13,6 @@ const postLogin = () => {
          xhttp.onload = function() {
             if (this.readyState == 4 && this.status == 200) {
                 const response = JSON.parse(this.responseText)
-                console.log(response)
                 localStorage.setItem("token", response["access_token"])
                 resolve(this.response)
             } else {
@@ -41,9 +41,8 @@ const postLogin = () => {
         
         xhttp.send(JSON.stringify(data));
     }).then(function(value) {
-        console.log(value + ' - A synchronous value works'); // 2 - A synchronous value works
         window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/admin.html")
-    }).catch(console.log("caught an error"));
+    }).catch();
 }
 
 

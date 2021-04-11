@@ -1,6 +1,10 @@
+import {createTable, createHeader, createAlert, createYearOptions, createMovieGenreOptions} from './utils.js'
+
+import {get_requests_url, 
+        login_client_page_url, movies_endpoint, actors_endpoint, reviews_endpoint
+} from './strings.js'
 
 window.onload=()=>{
-    
     const token = window.localStorage.getItem('token')
     if(token != null){
         const load_movies = document.getElementById("load_movies")
@@ -8,80 +12,17 @@ window.onload=()=>{
         const load_actors = document.getElementById("load_actors")
         load_actors.addEventListener("click", loadActors)
     } else {
-        window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/login_client.html")
+        window.location.replace(login_client_page_url)
     }
     
     
 };
 
-createTable = () => {
-    const container_res = document.getElementById("container_responsive")
-    let table = document.getElementById("main_table")
-    if(table != null){
-        table.innerHTML = ""
-    } else {
-        table = document.createElement("table")
-        table.setAttribute("id", "main_table")
-        table.setAttribute("class", "table table-bordered table-hover")
-        container_res.appendChild(table)
-    }
-}
-
-
-createHeader = (table_id, headers) => {
-    // table_id - string id for table
-    // header - array of headers for the table columns
-
-    createTable()
-    const tr_head = document.createElement("tr")
-    
-    for(let value of headers){
-        const th = document.createElement("th");
-        th.setAttribute("scope", "col");
-        th.setAttribute("id", "col_" + value + "_id")
-        th.innerHTML = value
-        tr_head.appendChild(th)
-    }
-    let t_body = document.getElementsByTagName("tbody")[0]
-    let t_head = document.getElementById("table_head")
-    
-    if (document.body.contains(t_body) && document.body.contains(t_head)){
-        main_table.removeChild(t_body)
-        t_head.innerHTML = ""
-        main_table.removeChild(t_head)
-        
-        thead = document.createElement("thead")
-        t_body = document.createElement("tbody")
-        
-        t_head.setAttribute("class", "thead-dark")
-        t_head.setAttribute("id", "table_head")
-        t_body.setAttribute("id", table_id)
-        
-        t_head.appendChild(tr_head)
-        main_table.appendChild(t_head)
-        main_table.appendChild(t_body)
-        
-    } else {
-        t_body = document.createElement("tbody")
-        t_head = document.createElement("thead")
-        t_head.setAttribute("class", "thead-dark")
-        t_head.setAttribute("id", "table_head")
-        t_body.setAttribute("id", table_id)
-        t_body.setAttribute("id", table_id)
-        t_head.appendChild(tr_head)
-        main_table.appendChild(t_head)
-        main_table.appendChild(t_body)
-    }
-
-}
-
-
-
-loadMovies = () => {
+const loadMovies = () => {
         const container_res = document.getElementById("container_responsive")
         container_res.innerHTML = ""
         const xhttp = new XMLHttpRequest();
-        const url = "https://young-u6.azurewebsites.net/API/v1/movie";
+        const url = movies_endpoint;
         const token = window.localStorage.getItem('token')
         xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -140,7 +81,7 @@ loadMovies = () => {
     	row.appendChild(td_actions)
     
     	document.getElementById('movie_rows').appendChild(row);
-    	console.log('value ' + value);
+
     }
     
     
@@ -151,7 +92,7 @@ loadMovies = () => {
     xhttp.send();
 }
 
-updateMovie = (movie_id) => {
+const updateMovie = (movie_id) => {
 
     const container_responsive = document.getElementById("container_responsive")
     
@@ -171,21 +112,24 @@ updateMovie = (movie_id) => {
     const title_input = document.createElement("input")
     title_input.setAttribute("value", movie_title_val)
     title_input.setAttribute("id", "movie_title_val")
+    title_input.setAttribute("class", "form-control")
     
-    const year_input = document.createElement("input")
-    year_input.setAttribute("value", movie_year_val)
+    const year_input = document.createElement("select")
     year_input.setAttribute("id", "movie_year_val")
+    year_input.setAttribute("class", "form-control")
+    year_input.innerHTML = createYearOptions(1800, movie_year_val)
+    year_input.setAttribute("value", movie_year_val)
     
-    const genre_input = document.createElement("input")
+    const genre_input = document.createElement("select")
+    genre_input.innerHTML = createMovieGenreOptions(movie_genre_val)
     genre_input.setAttribute("value", movie_genre_val)
     genre_input.setAttribute("id", "movie_genre_val")
+    genre_input.setAttribute("class", "form-control")
     
     const put_btn = document.getElementById("put_movie_btn")
     container_responsive.insertBefore(title_input, put_btn)
     container_responsive.insertBefore(year_input, put_btn)
     container_responsive.insertBefore(genre_input, put_btn)
-    console.log("movie_id")
-    console.log(movie_id)
     
     const save_btn = document.createElement("input");
             	save_btn.setAttribute("type", "button")
@@ -204,57 +148,63 @@ updateMovie = (movie_id) => {
     
 }
 
-putMovieUpdate = (movie_id) => {
-    const token = window.localStorage.getItem('token')
-    const xhttp = new XMLHttpRequest();
-    const url = "https://young-u6.azurewebsites.net/API/v1/movie/";
-    
-    xhttp.onload = function() {
-    if (this.readyState == 4 && this.status == 200) { 
-        console.log("state is good")
-        
-    
-        }
-    };
-    
-    const title_input = document.getElementById("movie_title_val")
-
-    const year_input = document.getElementById("movie_year_val")
-    
-    const genre_input = document.getElementById("movie_genre_val")
-    
-    
-    let data_to_post = new Object()
-      data_to_post["title"] = title_input.value
-      data_to_post["year"] = parseInt(year_input.value)
-      data_to_post["genre"] = genre_input.value
-      // convert to JSON string
-    let stringData = JSON.stringify(data_to_post); 
-    console.log(stringData)
-    console.log(url + movie_id)
-    xhttp.open("PUT", url + movie_id, true);  
-    xhttp.setRequestHeader("Content-type", "text/plain");
-    xhttp.setRequestHeader("Authorization", "Bearer " + token);
-    xhttp.send(stringData);
-}
-
-putActorUpdate = (actor_id) => {
+const putMovieUpdate = (movie_id) => {
+     return new Promise(function (resolve, reject){
         const token = window.localStorage.getItem('token')
         const xhttp = new XMLHttpRequest();
-        const url = "https://young-u6.azurewebsites.net/API/v1/actor/";
+        const url = movies_endpoint;
         
         xhttp.onload = function() {
-        if (this.readyState == 4 && this.status == 200) { 
-            console.log("state is good")
+        if (this.readyState == 4 && this.status == 200) {
             
-        
-            }
+            viewMovie(movie_id)
+            
+            resolve(this.response)
+        } else {
+            reject({
+              status: this.status,
+              statusText: xhttp.statusText
+            });
+        }
         };
         
-        const title_input = document.getElementById("actor_name")
-    
-        const year_input = document.getElementById("born_year")
+        const title_input = document.getElementById("movie_title_val")
+        const year_input = document.getElementById("movie_year_val")
+        const genre_input = document.getElementById("movie_genre_val")
         
+        
+        let data_to_post = new Object()
+          data_to_post["title"] = title_input.value
+          data_to_post["year"] = parseInt(year_input.value)
+          data_to_post["genre"] = genre_input.value
+          // convert to JSON string
+        let stringData = JSON.stringify(data_to_post); 
+        
+        
+        
+        xhttp.open("PUT", url + movie_id, true);  
+        xhttp.setRequestHeader("Content-type", "text/plain");
+        xhttp.setRequestHeader("Authorization", "Bearer " + token);
+        xhttp.send(stringData);
+     }).then(function(value) {
+        
+    }).catch();
+}
+
+const putActorUpdate = (actor_id) => {
+        const token = window.localStorage.getItem('token')
+        const xhttp = new XMLHttpRequest();
+        const url = actors_endpoint;
+        
+        xhttp.onload = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            const container_responsive = document.getElementById("container_responsive")
+            container_responsive.innerHTML = ""
+            loadActors()
+            }
+        };
+        const title_input = document.getElementById("actor_name")
+        const year_input = document.getElementById("born_year")
         const genre_input = document.getElementById("picutre_url")
         
         
@@ -264,8 +214,6 @@ putActorUpdate = (actor_id) => {
           data_to_post["pictureURL"] = genre_input.value
           // convert to JSON string
         let stringData = JSON.stringify(data_to_post); 
-        console.log(stringData)
-        console.log(url + actor_id)
         xhttp.open("PUT", url + actor_id, true);  
         xhttp.setRequestHeader("Content-type", "text/plain");
         xhttp.setRequestHeader("Authorization", "Bearer " + token);
@@ -276,13 +224,14 @@ putActorUpdate = (actor_id) => {
 
 
 
-deleteMovie = (id) => {
+const deleteMovie = (id) => {
     const token = window.localStorage.getItem('token')
     const xhttp = new XMLHttpRequest();
-    const url = "https://young-u6.azurewebsites.net/API/v1/movie/";
+    const url = movies_endpoint;
     xhttp.open("DELETE", url + id, true);
     xhttp.onload = function() {
     if (this.readyState == 4 && this.status == 200) { 
+        loadMovies()
     }
     };
     xhttp.setRequestHeader("Content-type", "text/plain");
@@ -290,13 +239,14 @@ deleteMovie = (id) => {
     xhttp.send();
 }
 
-deleteActor = (id) => {
+const deleteActor = (id) => {
     const token = window.localStorage.getItem('token')
     const xhttp = new XMLHttpRequest();
-    const url = "https://young-u6.azurewebsites.net/API/v1/actor/";
+    const url = actors_endpoint;
     xhttp.open("DELETE", url + id, true);
     xhttp.onload = function() {
     if (this.readyState == 4 && this.status == 200) { 
+        loadActors()
     }
     };
     xhttp.setRequestHeader("Content-type", "text/plain");
@@ -304,16 +254,15 @@ deleteActor = (id) => {
     xhttp.send();
 }
 
-viewMovie = (id) => {
+const viewMovie = (id) => {
     const token = window.localStorage.getItem('token')
     return new Promise(function (resolve, reject){
         const xhttp = new XMLHttpRequest();
-        const url = "https://young-u6.azurewebsites.net/API/v1/movie/";
+        const url = movies_endpoint;
         
         xhttp.onload = function() {
             if (this.readyState == 4 && this.status == 200) {
                 const res_obj = JSON.parse(this.responseText)
-                console.log(res_obj)
                 const features = document.getElementById("features")
                 // const main_table = document.getElementById("main_table")
                 // main_table.innerHTML = ""
@@ -371,18 +320,16 @@ viewMovie = (id) => {
         xhttp.setRequestHeader("Content-type", "text/plain");
         xhttp.send();
     }).then(function(value) {
-        console.log(value + ' - A synchronous value works'); // 2 - A synchronous value works
-        // window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/view_movie.html")
         
-    }).catch(console.log("caught an error"));
+    }).catch();
 }
 
 
-viewActor = (id) => {
+const viewActor = (id) => {
     const token = window.localStorage.getItem('token')
     return new Promise(function (resolve, reject){
         const xhttp = new XMLHttpRequest();
-        const url = "https://young-u6.azurewebsites.net/API/v1/actor/";
+        const url = actors_endpoint;
         
         xhttp.onload = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -410,14 +357,18 @@ viewActor = (id) => {
                 const header = document.createElement("input")
                 header.value = res_obj["fullname"]
                 header.setAttribute("id", "actor_name")
+                header.setAttribute("class", "form-control")
                 
-                const year = document.createElement("input")
+                const year = document.createElement("select")
                 year.value = res_obj["year"] 
                 year.setAttribute("id", "born_year")
+                year.setAttribute("class", "form-control")
+                year.innerHTML = createYearOptions(1900, res_obj["year"])
                 
                 const genre = document.createElement("input")
                 genre.value = res_obj["pictureURL"] 
                 genre.setAttribute("id", "picutre_url")
+                genre.setAttribute("class", "form-control")
                 
                 
                 container_movie.appendChild(header)
@@ -442,146 +393,147 @@ viewActor = (id) => {
         xhttp.setRequestHeader("Content-type", "text/plain");
         xhttp.send();
     }).then(function(value) {
-        console.log(value + ' - A synchronous value works'); // 2 - A synchronous value works
-        // window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/view_movie.html")
-        
-    }).catch(console.log("caught an error"));
+       
+    }).catch();
 }
 
 
 
 
-showReviews = (id) => {
+const showReviews = (movie_id) => {
     const token = window.localStorage.getItem('token')
     return new Promise(function (resolve, reject){
         const xhttp = new XMLHttpRequest();
-        const url = "https://young-u6.azurewebsites.net/API/v1/review/";
+        const url = reviews_endpoint;
         
         xhttp.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                const res_obj = JSON.parse(this.responseText)
-                console.log(res_obj)
-                
-                createHeader("review_rows", ["ID", "Comment", "Rating"])
-                for(value in res_obj){
-                    console.log("value " + res_obj[value])
-                    const obj = res_obj[value]
-                    const row = document.createElement("tr");
-                	const th = document.createElement("th");
-                	th.setAttribute("scope", "row")
-                    
-                    const td_id = document.createElement("td");
-                	const td_comment = document.createElement("td");
-                	const td_rating = document.createElement("td");
-
-                	td_id.innerHTML = obj["reviewId"]
-                	td_comment.innerHTML = obj["comment"]
-                	td_rating.innerHTML = obj["rating"]
-                	
-                	row.appendChild(td_id)
-                	row.appendChild(td_comment)
-                	row.appendChild(td_rating)
-                	let rows = document.getElementById("review_rows")
-                	rows.appendChild(row)
-                	
-                	
+                if (this.readyState == 4 && this.status == 200) {
+    
+                    resolve(this.response)
+                    const res_obj = JSON.parse(this.responseText)
+                    console.log(res_obj)
+                    if(res_obj.length == 0){
+                        
+                    } else {
+                        createHeader("review_rows", ["ID", "Comment", "Rating"])
+                        for(let value in res_obj){
+                            const obj = res_obj[value]
+                            const row = document.createElement("tr");
+                        	const th = document.createElement("th");
+                        	th.setAttribute("scope", "row")
+                            
+                            const td_id = document.createElement("td");
+                        	const td_comment = document.createElement("td");
+                        	const td_rating = document.createElement("td");
+        
+                        	td_id.innerHTML = obj["reviewId"]
+                        	td_comment.innerHTML = obj["comment"]
+                        	td_rating.innerHTML = obj["rating"]
+                        	
+                        	row.appendChild(td_id)
+                        	row.appendChild(td_comment)
+                        	row.appendChild(td_rating)
+                        	let rows = document.getElementById("review_rows")
+                        	rows.appendChild(row)
+                        	
+                        } 
+                    }
+    
+                    } else {
+                        
+                        reject({
+                          status: this.status,
+                          statusText: xhttp.statusText
+                        });
+                    }
+                    if(this.status == 404){
+                            createAlert('','','No reviews to display.','danger',true,true,'container_responsive')
+                        }
                 }
-                resolve(this.response)
-                } else {
-                    reject({
-                      status: this.status,
-                      statusText: xhttp.statusText
-                    });
-                }
+            
+            xhttp.open("GET", url + movie_id, true);
+            xhttp.setRequestHeader("Authorization", "Bearer " + token);
+            xhttp.setRequestHeader("Content-type", "text/plain");
+            xhttp.send();
+        }).then(function(value) {
+            
+        } , function() {}).catch(console.log("caught"));
+    }
+    
+    
+    const loadActors = () => {
+        const token = window.localStorage.getItem('token')
+        const xhttp = new XMLHttpRequest();
+        const url = actors_endpoint;
+        
+        xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            const res_arr = JSON.parse(this.responseText)
+            
+            createHeader("actor_rows", ["ID", "Name", "Born", "photoUrl", "Actions"])
+            
+        
+            
+            for(let value of res_arr){
+            
+        	
+        	const anchor_delete = document.createElement("a");
+        	anchor_delete.setAttribute("id", "delete" + value["actorId"])
+        	
+        	const delete_btn = document.createElement("input");
+        	delete_btn.setAttribute("type", "button")
+        	delete_btn.setAttribute("class", "btn btn-info table_btn")
+        	delete_btn.setAttribute("value", "Delete")
+        	
+        	anchor_delete.appendChild(delete_btn)
+        	anchor_delete.addEventListener("click", () => {deleteActor(value["actorId"])})
+        	
+        	const anchor_view = document.createElement("a");
+        	anchor_view.setAttribute("id", "view" + value["actorId"])
+        	
+        	const view_btn = document.createElement("input");
+        	view_btn.setAttribute("type", "button")
+        	view_btn.setAttribute("class", "btn btn-info")
+        	view_btn.setAttribute("value", "Update")
+        	
+        	
+        	anchor_view.appendChild(view_btn)
+            anchor_view.addEventListener("click", () => {
+                event.preventDefault()
+                viewActor(value["actorId"])
+            })
+            
+            
+            
+            const row = document.createElement("tr");
+            const th = document.createElement("th");
+            th.setAttribute("scope", "row")
+            
+            const td_name = document.createElement("td");
+            const td_born = document.createElement("td");
+            const td_photo_url = document.createElement("td")
+            const td_actions = document.createElement("td")
+            td_photo_url.setAttribute("class", "photo_container")
+            
+            th.innerHTML = value["actorId"]
+            td_name.innerHTML = value["fullname"]
+            td_born.innerHTML = value["year"]
+            td_actions.appendChild(anchor_delete)
+            td_actions.appendChild(anchor_view)
+            
+            const photo = document.createElement("img")
+            photo.setAttribute("src", value["pictureURL"])
+            photo.setAttribute("class", "actor_photo")
+            td_photo_url.appendChild(photo)
+            row.appendChild(th)
+            row.appendChild(td_name)
+            row.appendChild(td_born)
+            row.appendChild(td_photo_url)
+            row.appendChild(td_actions)
+            
+            document.getElementById('actor_rows').appendChild(row);
             }
-        
-        xhttp.open("GET", url + id, true);
-        xhttp.setRequestHeader("Authorization", "Bearer " + token);
-        xhttp.setRequestHeader("Content-type", "text/plain");
-        xhttp.send();
-    }).then(function(value) {
-        console.log(value + ' - A synchronous value works'); // 2 - A synchronous value works
-        // window.location.replace("https://www.aleksandrasorokina.com/COMP4537/termproject/API/V1/view_movie.html")
-        
-    }).catch(console.log("caught an error"));
-}
-
-
-loadActors = () => {
-    const token = window.localStorage.getItem('token')
-    const xhttp = new XMLHttpRequest();
-    const url = "https://young-u6.azurewebsites.net/API/v1/actor";
-    
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-    const res_arr = JSON.parse(this.responseText)
-    
-    createHeader("actor_rows", ["ID", "Name", "Born", "photoUrl", "Actions"])
-    
-
-    
-    for(let value of res_arr){
-    
-	
-	const anchor_delete = document.createElement("a");
-	anchor_delete.setAttribute("id", "delete" + value["actorId"])
-	
-	const delete_btn = document.createElement("input");
-	delete_btn.setAttribute("type", "button")
-	delete_btn.setAttribute("class", "btn btn-info table_btn")
-	delete_btn.setAttribute("value", "Delete")
-	
-	anchor_delete.appendChild(delete_btn)
-	anchor_delete.addEventListener("click", () => {deleteActor(value["actorId"])})
-	
-	const anchor_view = document.createElement("a");
-	anchor_view.setAttribute("id", "view" + value["actorId"])
-	
-	const view_btn = document.createElement("input");
-	view_btn.setAttribute("type", "button")
-	view_btn.setAttribute("class", "btn btn-info")
-	view_btn.setAttribute("value", "View")
-	
-	
-	anchor_view.appendChild(view_btn)
-    anchor_view.addEventListener("click", () => {
-        event.preventDefault()
-        viewActor(value["actorId"])
-    })
-    
-    
-    
-    console.log(value)
-    const row = document.createElement("tr");
-    const th = document.createElement("th");
-    th.setAttribute("scope", "row")
-    
-    const td_name = document.createElement("td");
-    const td_born = document.createElement("td");
-    const td_photo_url = document.createElement("td")
-    const td_actions = document.createElement("td")
-    td_photo_url.setAttribute("class", "photo_container")
-    
-    th.innerHTML = value["actorId"]
-    td_name.innerHTML = value["fullname"]
-    td_born.innerHTML = value["year"]
-    td_actions.appendChild(anchor_delete)
-    td_actions.appendChild(anchor_view)
-    
-    const photo = document.createElement("img")
-    photo.setAttribute("src", value["pictureURL"])
-    photo.setAttribute("class", "actor_photo")
-    td_photo_url.appendChild(photo)
-    row.appendChild(th)
-    row.appendChild(td_name)
-    row.appendChild(td_born)
-    row.appendChild(td_photo_url)
-    row.appendChild(td_actions)
-    
-    document.getElementById('actor_rows').appendChild(row);
-    console.log('value ' + value);
-    }
-    }
+        }
     }
     xhttp.open("GET", url, true);
     xhttp.setRequestHeader("Authorization", "Bearer " + token);
